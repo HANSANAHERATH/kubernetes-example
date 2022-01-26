@@ -1,0 +1,49 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: demo-app-ingress
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: nginxc.com
+    http:
+      paths:
+#        - path: /railway-system
+#          pathType: Prefix
+#          backend:
+#            service:
+#              name: railway-service-backend-sevice
+#              port:
+#                number: 8080
+        - path: /
+          pathType: Prefix
+          backend:
+            service:
+              name: railway-service-frontend-sevice
+              port:
+                number: 81
+        - path: /railway-system
+          pathType: Prefix
+          backend:
+            service:
+              name: railway-service-backend-sevice
+              port:
+                number: 8080
+
+  - host: railwayservice.com
+    http:
+      paths:
+        - path: /railway-system
+          pathType: Prefix
+          backend:
+            service:
+              name: railway-service-backend-sevice
+              port:
+                number: 8080
+        - path: /
+          pathType: Prefix
+          backend:
+            service:
+              name: railway-service-frontend-sevice
+              port:
+                number: 81

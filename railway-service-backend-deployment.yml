@@ -1,0 +1,58 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: railway-service-backend-deployment
+  labels:
+    app: railway-service-backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: railway-service-backend
+  ### This is for pods ###
+  template:
+    metadata:
+      labels:
+        app: railway-service-backend
+    spec:
+      containers:
+      - name: railway-service-backend
+        image: hansana12332/railway-service:latest
+        ports:
+        - containerPort: 8080
+        env:
+        - name: SPRING_DATASOURCE_URL
+          valueFrom:
+            configMapKeyRef:
+              name: railway-system-config-map
+              key: SPRING_DATASOURCE_URL
+        - name: SPRING_JPA_HIBERNATE_DDL_AUTO
+          valueFrom:
+            configMapKeyRef:
+              name: railway-system-config-map
+              key: SPRING_JPA_HIBERNATE_DDL_AUTO
+        - name: SPRING_DATASOURCE_USERNAME
+          valueFrom:
+            configMapKeyRef:
+              name: railway-system-config-map
+              key: SPRING_DATASOURCE_USERNAME
+        - name: SPRING_DATASOURCE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: railway-system-secret
+              key: SPRING_DATASOURCE_PASSWORD
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: railway-service-backend-sevice
+spec:
+  selector:
+    app: railway-service-backend
+#  type: LoadBalancer
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
+#      nodePort: 30000
